@@ -1,0 +1,40 @@
+datasets:
+-   name: hess_run20326
+    type: MapDataset
+    filename: hess_run20326.fits.gz
+-   name: hess_run20327
+    type: MapDataset
+    filename: hess_run20327.fits.gz
+-   name: hess_run20349
+    type: MapDataset
+    filename: hess_run20349.fits.gz
+-   name: hess_run20350
+    type: MapDataset
+    filename: hess_run20350.fits.gz
+-   name: hess_run20396
+    type: MapDataset
+    filename: hess_run20396.fits.gz
+-   name: hess_run20397
+    type: MapDataset
+    filename: hess_run20397.fits.gz
+-   name: hess_run20421
+    type: MapDataset
+    filename: hess_run20421.fits.gz
+-   name: hess_run20422
+    type: MapDataset
+    filename: hess_run20422.fits.gz
+-   name: hess_run20517
+    type: MapDataset
+    filename: hess_run20517.fits.gz
+-   name: hess_run20518
+    type: MapDataset
+    filename: hess_run20518.fits.gz
+-   name: hess_run20519
+    type: MapDataset
+    filename: hess_run20519.fits.gz
+-   name: hess_run20521
+    type: MapDataset
+    filename: hess_run20521.fits.gz
+metadata:
+    creator: Gammapy 2.0
+    date: '2026-05-28T09:09:46.469250'
