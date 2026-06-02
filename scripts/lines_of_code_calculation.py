@@ -110,4 +110,4 @@ sizes_v2 = np.array([df_cloc_all_v2[label].values[0] for label in labels])
 
 # Plot
 plot_version_comparison(labels=labels, v1=sizes_v1, v2=sizes_v2, figsize=(7, 5), width=0.25, rotation=30)
-plt.savefig('LOC_pie_comparison.pdf', bbox_inches='tight')        
+plt.savefig('../figures/LOC_pie_comparison.pdf', bbox_inches='tight')        

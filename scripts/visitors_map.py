@@ -44,7 +44,16 @@ world_proj.plot(column="Visits", cmap="Blues", legend=True, linewidth=0.4, edgec
                 norm=LogNorm(vmin=world_proj.Visits.min(), vmax=world_proj.Visits.max()), 
               missing_kwds={"color": "lightgrey", "edgecolor": "0.2",  "hatch": "///", "label": "No data"},
               legend_kwds={"label": "Number of Visits", "orientation": "vertical",  "shrink": 0.6,  "pad": 0})
+# Add custom legend entry for missing data
+import matplotlib.patches as mpatches
+missing_patch = mpatches.Patch(
+    facecolor="lightgrey",
+    edgecolor="0.2",
+    hatch="///",
+    label="No data"
+)
+ax.legend(handles=[missing_patch], loc="lower left")
 ax.set_axis_off()
 ax.set_title("Matamo analytics for Gammapy Documentation", fontsize=14, fontweight="bold", pad=2)
 plt.tight_layout()
-plt.savefig('number_of_visitors.pdf', bbox_inches='tight')
+plt.savefig('../figures/number_of_visitors.pdf', bbox_inches='tight')
