@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
+
 import numpy as np
 import matplotlib.pyplot as plt
 import astropy.units as u
@@ -7,11 +8,14 @@ from astropy.visualization import quantity_support
 from gammapy.maps import MapAxis, RegionNDMap
 from gammapy.modeling.models import PowerLawSpectralModel, ExpCutoffPowerLawSpectralModel
 from gammapy.modeling.models.spectral import scale_plot_flux
+import matplotlib as mpl
 
+mpl.rcParams['xtick.labelsize'] = 12
+mpl.rcParams['ytick.labelsize'] = 12
+mpl.rcParams['axes.labelsize'] = 13
 
 class SpectralErrorPropagation:
-    """
-    Compute error bands using analytical error propagation.
+    """Compute error bands using analytical error propagation.
 
     Parameters
     ----------
@@ -19,8 +23,6 @@ class SpectralErrorPropagation:
         The model on wich to apply error propagation
     epsilon : float
         Step size of the gradient evaluation. Given as a fraction of the parameter error.
- 
-    
     """
     
     def __init__(self, model, epsilon=1e-4):
@@ -257,33 +259,45 @@ def plot_error_model(
         return ax
 
 
-def make_figure(model, e_range=[0.2,20]*u.TeV):
-    fig = plt.figure(figsize=(6, 5))
-    ax = model.plot(e_range, sed_type="e2dnde")
-    ax = model.plot_error(e_range, sed_type="e2dnde", label='Sampling', ax=ax)
-    ax = plot_error_model(model, e_range, sed_type="e2dnde", facecolor='r', label='Error propagation', ax=ax)
-    ax.set_ylabel(r"$\rm E^2\frac{dN}{dE}, [erg\,cm^{-2}\,s^{-1}]$")
-    ax.set_xlim(e_range)
-    plt.legend()
-    plt.tight_layout()
-    return fig
+def plot_model(model, ax, energy_bounds=[0.2,20]*u.TeV, sed_type="e2dnde"):
+    model.plot(energy_bounds=energy_bounds, sed_type=sed_type, ax=ax)
+    model.plot_error(
+        energy_bounds=energy_bounds,
+        sed_type=sed_type,
+        label="Sampling",
+        ax=ax,
+    )
+    plot_error_model(
+        model,
+        energy_bounds=energy_bounds,
+        sed_type=sed_type,
+        facecolor="r",
+        label="Error propagation",
+        ax=ax,
+    )
 
+    ax.set_ylabel(r"$\rm E^2\frac{dN}{dE}\,[erg\,cm^{-2}\,s^{-1}]$")
+    ax.set_xlim(energy_bounds)
+    ax.legend()
 
-if __name__ == "__main__":
-    # Figure with PL only
+if __name__ == "__main__":    
+    fig, axes = plt.subplots(2, 1, figsize=(6, 9))
+    
     pl = PowerLawSpectralModel(index=2.3)
     pl.index.error = 0.3
     pl.amplitude.error = 0.3 * pl.amplitude.value
-    fig1 = make_figure(pl)
-    fig1.savefig("figures/sampling_error_propagation_comparison_pl.pdf", dpi=200)
+    plot_model(pl, axes[0])
+    axes[0].text(0.05, 0.05, "Power-law", transform=axes[0].transAxes, fontsize=13)
+    axes[0].get_xaxis().set_visible(False)
 
-    # Figure with ECPL
     ecpl = ExpCutoffPowerLawSpectralModel(index=2.3, lambda_='0.1 TeV-1')
     ecpl.index.error=0.2
     ecpl.amplitude.error = 0.2*pl.amplitude.value
     ecpl.lambda_.error = 0.03
-    fig2 = make_figure(ecpl, e_range=[0.2,40]*u.TeV)
-    fig2.savefig("figures/sampling_error_propagation_comparison_ecpl.pdf", dpi=200)
+    plot_model(ecpl, axes[1])
+    axes[1].text(0.05, 0.05, "Exponential cutoff power-law", transform=axes[1].transAxes, fontsize=13)
+    plt.tight_layout()
+    fig.savefig("../figures/sampling_error_propagation_comparison.pdf", dpi=200, bbox_inches='tight')
 
     plt.show()
 
