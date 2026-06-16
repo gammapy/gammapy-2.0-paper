@@ -25,6 +25,11 @@ from gammapy.modeling.models import (
     PowerLawSpectralModel,
     SkyModel,
 )
+import matplotlib as mpl
+
+mpl.rcParams['xtick.labelsize'] = 12
+mpl.rcParams['ytick.labelsize'] = 12
+mpl.rcParams['axes.labelsize'] = 13
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -35,7 +40,7 @@ DATA_PATH = os.path.join(os.environ["GAMMAPY_DATA"], "hawc/crab_events_pass4/")
 HDU_FILENAME = f"hdu-index-table-{WHICH}-Crab.fits.gz"
 OBS_FILENAME = f"obs-index-table-{WHICH}-Crab.fits.gz"
 DATASETS_FILE = "HAWC_365_transit.yaml"
-OUTPUT_FIGURE = "HAWC_sensitivity.png"
+OUTPUT_FIGURE = "../figures/HAWC_sensitivity.pdf"
 
 CRAB_CENTER = SkyCoord(ra=83.63, dec=22.01, unit="deg", frame="icrs")
 N_TRANSITS = 365  # ~ 1yr of HAWC sensitivity
@@ -208,8 +213,8 @@ def plot_results(fp, model_fit, energy_axis):
     )
 
     ax.legend()
-    ax.set_ylabel(r"$E^2 \times \mathrm{flux\ sensitivity\ (erg\ cm^{-2}\ s^{-1})}$", fontsize=12)
-    ax.set_xlabel("Energy (TeV)", fontsize=12)
+    ax.set_ylabel(r"$\mathrm{E}^2 \times \mathrm{flux\ sensitivity\ [erg\ cm^{-2}\ s^{-1}]}$")
+    ax.set_xlabel("Energy [TeV]")
 
     fig.savefig(OUTPUT_FIGURE, dpi=500, bbox_inches="tight")
     print(f"Figure saved to {OUTPUT_FIGURE}")
