@@ -1,3 +1,4 @@
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
 # This code produces the Gammapy visits map for v2.0 paper
 # >>> python visitors_map.py
 

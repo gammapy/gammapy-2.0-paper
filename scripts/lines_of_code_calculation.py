@@ -1,3 +1,7 @@
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
+# This code produces the number of lines of code figure in the v2.0 paper
+# >>> python lines_of_code_calculation.py
+
 # Imports
 import subprocess
 import pandas as pd
