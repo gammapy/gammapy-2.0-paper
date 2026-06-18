@@ -34,11 +34,9 @@ from gammapy.modeling import Sampler
 from gammapy.modeling.models import PowerLawSpectralModel, SkyModel, UniformPrior
 from gammapy.utils.parallel import run_multiprocessing
 
-import matplotlib as mpl
-
-mpl.rcParams['xtick.labelsize'] = 12
-mpl.rcParams['ytick.labelsize'] = 12
-mpl.rcParams['axes.labelsize'] = 13
+plt.rcParams['xtick.labelsize'] = 12
+plt.rcParams['ytick.labelsize'] = 12
+plt.rcParams['axes.labelsize'] = 13
 
 def build_observation(livetime="1 h"):
     # Define simulation parameters parameters

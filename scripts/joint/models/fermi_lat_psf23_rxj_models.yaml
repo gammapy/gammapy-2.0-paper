@@ -298,7 +298,7 @@ components:
         -   name: lat_0
             value: -39.762199399999986
             unit: deg
-        filename: /Users/qremy/Work/GitHub/gammapy-data/catalogs/fermi/Extended_14years/Templates/RXJ1713_2016_250GeV.fits.gz
+        filename: $GAMMAPY_DATA/catalogs/fermi/Extended_14years/Templates/RXJ1713_2016_250GeV.fits.gz
         normalize: true
         unit: 1 / sr
 -   name: 4FGL J1714.1-3811

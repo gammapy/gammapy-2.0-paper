@@ -25,11 +25,10 @@ from gammapy.modeling.models import (
     PowerLawSpectralModel,
     SkyModel,
 )
-import matplotlib as mpl
 
-mpl.rcParams['xtick.labelsize'] = 12
-mpl.rcParams['ytick.labelsize'] = 12
-mpl.rcParams['axes.labelsize'] = 13
+plt.rcParams['xtick.labelsize'] = 12
+plt.rcParams['ytick.labelsize'] = 12
+plt.rcParams['axes.labelsize'] = 13
 
 # ---------------------------------------------------------------------------
 # Configuration

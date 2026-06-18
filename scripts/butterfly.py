@@ -8,11 +8,10 @@ from astropy.visualization import quantity_support
 from gammapy.maps import MapAxis, RegionNDMap
 from gammapy.modeling.models import PowerLawSpectralModel, ExpCutoffPowerLawSpectralModel
 from gammapy.modeling.models.spectral import scale_plot_flux
-import matplotlib as mpl
 
-mpl.rcParams['xtick.labelsize'] = 12
-mpl.rcParams['ytick.labelsize'] = 12
-mpl.rcParams['axes.labelsize'] = 13
+plt.rcParams['xtick.labelsize'] = 12
+plt.rcParams['ytick.labelsize'] = 12
+plt.rcParams['axes.labelsize'] = 13
 
 class SpectralErrorPropagation:
     """Compute error bands using analytical error propagation.

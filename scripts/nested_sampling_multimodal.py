@@ -1,3 +1,19 @@
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
+
+"""
+Sampling analysis on a multi-modal example
+==========================================
+F. Acero, June 2026.
+Simulation of a fake 3D dataset with two sources simulated and only one fitted.
+A nested sampling analysis is compared to an iMinuit gradient descent fit.
+Script accompanying the gammapy v2 paper.
+
+In this script we :  
+- simulate a 3D dataset with two sources well separated
+- define a `Skymodel` where only one source is defined
+- fit the dataset with a) gradient descent via `Fit` and b) via the `Sampler` and the UltraNest backend
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import astropy.units as u
