@@ -21,7 +21,7 @@ from gammapy.estimators.utils import get_combined_significance_maps
 plt.rcParams["font.size"] = 11
 plt.rcParams['xtick.labelsize'] = 12
 plt.rcParams['ytick.labelsize'] = 12
-plt.rcParams['axes.labelsize'] = 13
+plt.rcParams['axes.labelsize'] = 14
 
 
 # Datasets setup
@@ -94,20 +94,45 @@ resi_kwargs =dict(
         add_cbar=False,
     )
 
+def plot_cutout(image, ax, plot_kwargs=None, margin=2*u.deg):
+    image = image.cutout(
+        image.geom.center_skydir, width=np.max(image.geom.width) - 2 * margin
+    )
+    kwargs = dict(ax=ax)
+    if plot_kwargs : 
+        kwargs.update(plot_kwargs)
+    image.plot(**kwargs)
+
+margin=2.42*u.deg
+geom = datasets[0].counts.geom
+fig_geom = geom.cutout(geom.center_skydir, width=np.max(geom.width) - 2 * margin)
+resi_kwargs =dict(
+        clim=[-9, 9],
+        cmap=plt.cm.RdBu_r,
+        add_cbar=False,
+    )
+
+# Plotting
 fig = plt.figure(figsize=(12, 5))
 ax1 = plt.subplot(131, projection=fig_geom.wcs)
 plot_cutout(ts_results_fermi["sqrt_ts"], ax1, resi_kwargs, margin)
-ax1.set_title("$Fermi$-LAT PSF2 + PSF3 (10 GeV - 1 TeV)")
+ax1.set_title("$Fermi$-LAT")
+ax1.text(0.5, 0.92, '10 GeV - 1 TeV', transform=ax1.transAxes,
+         ha='center', va='bottom', fontsize=13)
 
 ax2 = plt.subplot(132, projection=fig_geom.wcs)
 plot_cutout(ts_results_hess["sqrt_ts"], ax2, resi_kwargs, margin)
-ax2.set_title("H.E.S.S. 12 runs (500 GeV - 50 TeV)")
+ax2.set_title("H.E.S.S.")
 ax2.tick_params(axis="y", labelbottom=False)
+ax2.text(0.5, 0.92, '500 GeV - 50 TeV', transform=ax2.transAxes,
+         ha='center', va='bottom', fontsize=13)
 
 ax3 = plt.subplot(133, projection=fig_geom.wcs)
 plot_cutout(ts_results_joint["sqrt_ts"], ax3, resi_kwargs, margin)
 ax3.set_title("$Fermi$-LAT + H.E.S.S.")
 ax3.tick_params(axis="y", labelbottom=False)
+ax3.text(0.5, 0.92, '10 GeV - 50 TeV', transform=ax3.transAxes,
+         ha='center', va='bottom', fontsize=13)
 
 norm = colors.Normalize(vmin=resi_kwargs["clim"][0], vmax=resi_kwargs["clim"][1])
 sm = ScalarMappable(norm=norm, cmap=resi_kwargs["cmap"])
@@ -117,8 +142,8 @@ cb_ax = fig.add_axes([ .999, .21, 0.023 , .691])
 cb = fig.colorbar(sm, cax=cb_ax, orientation='vertical')  
 cb.ax.xaxis.set_ticks_position("top")
 cb.ax.xaxis.set_label_position("top")
-cb.ax.tick_params(axis="both", which="major", labelsize=14)
-cb.ax.set_ylabel(r"$\sqrt{TS}$ [$\sigma$]", fontsize=14)
+cb.ax.tick_params(axis="both", which="major")
+cb.ax.set_ylabel(r"$\sqrt{TS}$ [$\sigma$]")
 
 plt.tight_layout()
 plt.savefig('../../figures/joint_ts_fermilat_hess_rxj.pdf', bbox_inches='tight')
@@ -143,20 +168,28 @@ results_combined_fermi_rcorr0p1 = get_combined_significance_maps(estimator_rcorr
 results_combined_hess_rcorr0p1 = get_combined_significance_maps(estimator_rcorr0p1, datasets_hess)
 results_combined_rcorr0p1 = get_combined_significance_maps(estimator_rcorr0p1, datasets)
 
+
+# Plotting
 fig = plt.figure(figsize=(12, 5))
 ax1 = plt.subplot(131, projection=fig_geom.wcs)
 plot_cutout(results_combined_fermi_rcorr0p1["significance"], ax1, resi_kwargs, margin)
-ax1.set_title("$Fermi$-LAT PSF2 + PSF3 (10 GeV - 1 TeV)")
+ax1.set_title("$Fermi$-LAT")
+ax1.text(0.5, 0.92, '10 GeV - 1 TeV', transform=ax1.transAxes,
+         ha='center', va='bottom', fontsize=13)
 
 ax2 = plt.subplot(132, projection=fig_geom.wcs)
 plot_cutout(results_combined_hess_rcorr0p1["significance"], ax2, resi_kwargs, margin)
-ax2.set_title("H.E.S.S. 12 runs (500 GeV - 50 TeV)")
+ax2.set_title("H.E.S.S.")
 ax2.tick_params(axis="y", labelbottom=False)
+ax2.text(0.5, 0.92, '500 GeV - 50 TeV', transform=ax2.transAxes,
+         ha='center', va='bottom', fontsize=13)
 
 ax3 = plt.subplot(133, projection=fig_geom.wcs)
 plot_cutout(results_combined_rcorr0p1["significance"], ax3, resi_kwargs, margin)
 ax3.set_title("$Fermi$-LAT + H.E.S.S.")
 ax3.tick_params(axis="y", labelbottom=False)
+ax3.text(0.5, 0.92, '10 GeV - 50 TeV', transform=ax3.transAxes,
+         ha='center', va='bottom', fontsize=13)
 
 norm = colors.Normalize(vmin=resi_kwargs["clim"][0], vmax=resi_kwargs["clim"][1])
 sm = ScalarMappable(norm=norm, cmap=resi_kwargs["cmap"])
