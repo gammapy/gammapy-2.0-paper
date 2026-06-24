@@ -128,6 +128,23 @@ dataset.models = Models([sky_model, bkg_model]) #assuming just one src instead o
 fit = Fit(store_trace=True, backend='minuit')
 result_fit = fit.run(datasets=[dataset])
 
+# Record the trace
+trace = result_fit.trace 
+
+#Second fit
+sky_model.spatial_model.lon_0.value = -0.03
+sky_model.spatial_model.lat_0.value = -0.03
+sky_model.spectral_model.amplitude.value = 1.2e-12
+sky_model.spectral_model.index.value =2.2
+
+# Fit with the normal routine
+fit2 = Fit(store_trace=True, backend='minuit')
+result_fit2 = fit2.run(datasets=[dataset])
+
+# Record the second trace
+trace2 = result_fit2.trace 
+
+
 # Using the Sampler
 bkg_model.spectral_model.norm.value = 1.0
 bkg_model.spectral_model.norm.frozen = True
@@ -136,13 +153,12 @@ sampler_opts = {
     "live_points": 1000,
     "frac_remain": 0.01,
     "log_dir": "multi-modal",
-    "resume":"overwrite", 
+    "resume":"resume", 
 }
 sampler = Sampler(backend="ultranest", sampler_opts=sampler_opts)
 result = sampler.run(dataset)
 
-# Record the trace
-trace = result_fit.trace 
+
 
 # Plotting
 #---------------------
@@ -190,28 +206,32 @@ params = [
     "source.spatial.lat_0",
 ]
 
-for (i, p1), (j, p2) in combinations(enumerate(params), 2):
-    x, y = trace[p1][::2], trace[p2][::2]
-    ax = axes.T[i, j]
+def plot_trace(axes,params,trace,color='grey'):
+    for (i, p1), (j, p2) in combinations(enumerate(params), 2):
+        x, y = trace[p1][::2], trace[p2][::2] #trace every other point
+        ax = axes.T[i, j]
+    
+        segs = np.stack(
+            [np.column_stack([x[:-1], y[:-1]]),
+             np.column_stack([x[1:],  y[1:]])],
+            axis=1,
+        )
+    
+        ax.add_collection(
+            LineCollection(segs, colors=color, linewidths=2,alpha=0.8)
+        )
+    
+        ax.scatter(
+            x[0], y[0],
+            marker="s",
+            facecolors="none",
+            edgecolors=color,
+            s=120,
+            label="start",
+        )
 
-    segs = np.stack(
-        [np.column_stack([x[:-1], y[:-1]]),
-         np.column_stack([x[1:],  y[1:]])],
-        axis=1,
-    )
-
-    ax.add_collection(
-        LineCollection(segs, colors="grey", linewidths=2)
-    )
-
-    ax.scatter(
-        x[0], y[0],
-        marker="s",
-        facecolors="none",
-        edgecolors="k",
-        s=150,
-        label="start",
-    )
+plot_trace(axes,params,trace,color='grey')
+plot_trace(axes,params,trace2,color='firebrick')
 
 plt.savefig("../figures/nested_sampling_mulitmodal.pdf", dpi=200, bbox_inches='tight')
 
