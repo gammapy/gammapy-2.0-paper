@@ -21,7 +21,7 @@ exposures = ["0.03 h", "100 h"]  # Poisson and Gaussian regimes (0.3 h skipped)
 PRIORS = {"zero": "amplitude $\\geq 0$", "negative": "unconstrained"}
 COLORS = {"profile": "tab:orange", "sampler": "tab:blue"}
 MARKERS = {"profile": "v", "sampler": "o"}
-LABELS = {"profile": "UL profile", "sampler": "UL Bayes"}
+LABELS = {"profile": "UL frequentist", "sampler": "UL Bayesian"}
 METHODS = ("profile", "sampler")
 UL_METHOD = {"profile-zero": "exact", "profile-negative": "exact", "sampler-zero": "grid", "sampler-negative": "grid"}
 
@@ -29,7 +29,7 @@ plt.rcParams['font.size'] = 12
 plt.rcParams['axes.labelsize'] = 14
 plt.rcParams['xtick.labelsize'] = 14
 plt.rcParams['ytick.labelsize'] = 14
-plt.rcParams['axes.labelsize'] = 13
+plt.rcParams['axes.labelsize'] = 15
 
 
 def select(table, sort="seed", **filters):
@@ -59,7 +59,8 @@ def plot_lc_triangle(ax, axh, uls):
     for method in METHODS:
         values = uls[method]
         color = COLORS[method]
-        ax.scatter(x, values[:n], s=4, alpha=0.6, marker=MARKERS[method], color=color, label=LABELS[method], lw=0)
+        ax.plot(x, values[:n], markersize=2, alpha=0.6, marker=MARKERS[method], color=color, 
+                linestyle='None', label=LABELS[method], markeredgewidth=0)
         ax.axhline(np.nanmedian(values), ls="--", color=color, label="median")
 
     positive = np.concatenate([uls["profile"], uls["sampler"]])
@@ -80,7 +81,7 @@ def plot_lc_triangle(ax, axh, uls):
 # Plot the figure
 table = QTable.read("uls_main.ecsv", format="ascii.ecsv")
 
-fig = plt.figure(figsize=(18, 4.2 * len(exposures)))
+fig = plt.figure(figsize=(14, 4 * len(exposures)))
 outer = fig.add_gridspec(len(exposures), len(PRIORS), wspace=0.12, hspace=0.35)
 for i, exposure in enumerate(exposures):
     for j, (prior, prior_label) in enumerate(PRIORS.items()):        
@@ -96,5 +97,5 @@ for i, exposure in enumerate(exposures):
             ax.set_xlabel("Realization")
             axh.set_xlabel("Occurrence")
         if (i, j) == (0, 0):
-            ax.legend(fontsize=8, ncol=3, loc="lower left")
+            ax.legend(fontsize=12, ncol=2, loc="lower left")
 plt.savefig(f"../figures/UL_per_realization.pdf", dpi=500, bbox_inches="tight")
