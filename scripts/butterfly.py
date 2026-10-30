@@ -280,14 +280,14 @@ def plot_model(model, ax, energy_bounds=[0.2,20]*u.TeV, sed_type="e2dnde"):
     ax.legend()
 
 if __name__ == "__main__":    
-    fig, axes = plt.subplots(2, 1, figsize=(6, 9))
+    fig, axes = plt.subplots(2, 1, sharex=True, figsize=(6, 9))
     
     pl = PowerLawSpectralModel(index=2.3)
     pl.index.error = 0.3
     pl.amplitude.error = 0.3 * pl.amplitude.value
     plot_model(pl, axes[0])
     axes[0].text(0.05, 0.05, "Power-law", transform=axes[0].transAxes, fontsize=13)
-    axes[0].get_xaxis().set_visible(False)
+    axes[0].set_xlabel("")
 
     ecpl = ExpCutoffPowerLawSpectralModel(index=2.3, lambda_='0.1 TeV-1')
     ecpl.index.error=0.2
