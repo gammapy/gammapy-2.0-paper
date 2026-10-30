@@ -6,7 +6,7 @@ ULs per realization with side histograms
 F. Acero, October 2026. Editted by K. Feijen, October 2026.
 One panel per exposure (rows: 0.03 h and 100 h) and constraint (columns: amplitude >= 0, unconstrained),
 profile likelihood vs Bayesian ULs on the same realizations. Reads the main run of
-``ul_report.py`` (``report_results/uls_main.ecsv``), so run that first.
+`UL_simulation_run.py` (uls_main.ecsv), so run that first.
 
 Script accompanying the gammapy v2 paper.
 """
