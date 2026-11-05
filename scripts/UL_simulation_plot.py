@@ -24,6 +24,7 @@ MARKERS = {"profile": "v", "sampler": "o"}
 LABELS = {"profile": "UL frequentist", "sampler": "UL Bayesian"}
 METHODS = ("profile", "sampler")
 UL_METHOD = {"profile-zero": "exact", "profile-negative": "exact", "sampler-zero": "grid", "sampler-negative": "grid"}
+YMAX = {"0.03 h": 5e-12, "100 h": 3e-14}
 
 plt.rcParams['font.size'] = 12
 plt.rcParams['axes.labelsize'] = 14
@@ -52,14 +53,14 @@ def get(table, exposure, case, dataset_type="on", column="ul", **filters):
     return values.to_value("cm-2 s-1 TeV-1") if isinstance(values, u.Quantity) else np.asarray(values)
     
     
-def plot_lc_triangle(ax, axh, uls):
+def plot_lc_triangle(ax, axh, uls, ylim=None):
     """Scatter of the ULs vs realization (``ax``) and their histograms (``axh``), log scale. """
     n = len(uls["profile"])
     x = np.arange(n)
     for method in METHODS:
         values = uls[method]
         color = COLORS[method]
-        ax.plot(x, values[:n], markersize=2, alpha=0.6, marker=MARKERS[method], color=color, 
+        ax.plot(x, values[:n], markersize=3, alpha=0.6, marker=MARKERS[method], color=color, 
                 linestyle='None', label=LABELS[method], markeredgewidth=0)
         ax.axhline(np.nanmedian(values), ls="--", color=color, label="median")
 
@@ -73,23 +74,27 @@ def plot_lc_triangle(ax, axh, uls):
         axh.axhline(np.nanmedian(v), ls="--", color=COLORS[method])
 
     ax.set_yscale("log")
-    ax.set_ylim(1e-16, 5e-12)
+    if ylim is not None:
+        ax.set_ylim(*ylim)
     ax.xaxis.set_major_locator(MaxNLocator(nbins=6, integer=True))
     ax.set_xlim(-0.01 * n, 1.01 * n)
     axh.tick_params(labelleft=False)
     
 # Plot the figure
-table = QTable.read("uls_main.ecsv", format="ascii.ecsv")
+table = QTable.read("uls_main_dev.ecsv", format="ascii.ecsv")
 
 fig = plt.figure(figsize=(14, 4 * len(exposures)))
 outer = fig.add_gridspec(len(exposures), len(PRIORS), wspace=0.12, hspace=0.35)
 for i, exposure in enumerate(exposures):
+    values = (np.concatenate([get(table, exposure, f"{m}-negative") for m in METHODS]))
+    ymin = 0.8*(values[np.isfinite(values) & (values > 0)]).min()
+    ymax = YMAX[exposure]
     for j, (prior, prior_label) in enumerate(PRIORS.items()):        
         inner = outer[i, j].subgridspec(1, 2, width_ratios=[3, 1], wspace=0.04)
         ax = fig.add_subplot(inner[0])
         axh = fig.add_subplot(inner[1], sharey=ax)
         uls = {m: get(table, exposure, f"{m}-{prior}") for m in METHODS}
-        plot_lc_triangle(ax, axh, uls)
+        plot_lc_triangle(ax, axh, uls, ylim=(ymin, ymax))
         ax.set_title(f"{exposure}, {prior_label}")
         if j == 0:
             ax.set_ylabel("95% UL [TeV$^{-1}$ cm$^{-2}$ s$^{-1}$]")
