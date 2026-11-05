@@ -77,14 +77,13 @@ def plot_lc_triangle(ax, axh, uls, ylim=None):
     if ylim is not None:
         ax.set_ylim(*ylim)
     ax.xaxis.set_major_locator(MaxNLocator(nbins=6, integer=True))
-    ax.set_xlim(-0.01 * n, 1.01 * n)
-    axh.tick_params(labelleft=False)
+    ax.set_xlim(-0.01 * n, 1.01 * n)  
     
 # Plot the figure
 table = QTable.read("uls_main_dev.ecsv", format="ascii.ecsv")
 
 fig = plt.figure(figsize=(14, 4 * len(exposures)))
-outer = fig.add_gridspec(len(exposures), len(PRIORS), wspace=0.12, hspace=0.35)
+outer = fig.add_gridspec(len(exposures), len(PRIORS), wspace=0.05, hspace=0.3)
 for i, exposure in enumerate(exposures):
     values = (np.concatenate([get(table, exposure, f"{m}-negative") for m in METHODS]))
     ymin = 0.8*(values[np.isfinite(values) & (values > 0)]).min()
@@ -98,6 +97,9 @@ for i, exposure in enumerate(exposures):
         ax.set_title(f"{exposure}, {prior_label}")
         if j == 0:
             ax.set_ylabel("95% UL [TeV$^{-1}$ cm$^{-2}$ s$^{-1}$]")
+        else:
+            axh.tick_params(axis='y', which='both', left=False, labelleft=False)
+            axh.set_yticklabels([])
         if i == len(exposures) - 1:
             ax.set_xlabel("Realization")
             axh.set_xlabel("Occurrence")
